@@ -5,7 +5,11 @@ from pages.home_page import HomePage
 from pages.product_page import ProductPage
 from api.auth_client import AuthClient
 from config.settings import TEST_USER_EMAIL, TEST_USER_PASSWORD
+from pages.cart_page import CartPage
 
+@pytest.fixture
+def cart_page(page: Page) -> CartPage:
+    return CartPage(page)
 @pytest.fixture(scope="session", autouse=True)
 def set_test_id_attribute(playwright: Playwright):
     playwright.selectors.set_test_id_attribute("data-test")
