@@ -8,6 +8,7 @@ from pages.login_page import LoginPage
 @allure.feature("Authentication")
 @allure.story("Login")
 class TestLogin:
+
     @allure.title("Успешный вход с валидными данными")
     @pytest.mark.smoke
     @pytest.mark.ui
@@ -19,36 +20,23 @@ class TestLogin:
         with allure.step("Проверить переход на страницу аккаунта"):
             expect(page).to_have_url(re.compile(r"/account"))
 
-    @allure.title("Ошибка при отправке пустой формы")
-    @pytest.mark.regression
-    @pytest.mark.ui
-    def test_login_empty_fields(self, login_page: LoginPage):
-        with allure.step("Открыть страницу логина"):
-            login_page.open()
-        with allure.step("Отправить пустую форму"):
-            login_page.login("", "")
-        with allure.step("Проверить тексты ошибок валидации под полями"):
-            expect(login_page.email_error).to_be_visible()
-            expect(login_page.email_error).to_have_text("Email is required")
-            expect(login_page.password_error).to_be_visible()
-            expect(login_page.password_error).to_have_text("Password is required")
-
     @allure.title("Вход с неверными данными: {case}")
     @pytest.mark.regression
     @pytest.mark.ui
     @pytest.mark.parametrize(
-        "email,password,case",
+        "email,password,error_field,expected,case",
         [
-            ("nouser@example.com", "wrong_password", "несуществующий пользователь"),
-            (TEST_USER_EMAIL, "wrong_password", "неверный пароль"),
+            ("", "", "email_error", "Email is required", "пустой email"),
+            ("", "", "password_error", "Password is required", "пустой пароль"),
+            ("nouser@example.com", "wrong_password", "error_message", "Invalid email or password", "несуществующий пользователь"),
+            (TEST_USER_EMAIL, "wrong_password", "error_message", "Invalid email or password", "неверный пароль"),
         ],
-        ids=["unknown_user", "wrong_password"],
+        ids=["empty_email", "empty_password", "unknown_user", "wrong_password"],
     )
-    def test_invalid_credentials(self, login_page: LoginPage, email, password, case):
+    def test_login_negative(self, login_page: LoginPage, email, password, error_field, expected, case):
         with allure.step("Открыть страницу логина"):
             login_page.open()
         with allure.step(f"Попытка входа: {case}"):
             login_page.login(email, password)
-        with allure.step("Проверить появление общего сообщения об ошибке"):
-            expect(login_page.error_message).to_be_visible()
-            expect(login_page.error_message).to_have_text("Invalid email or password")
+        with allure.step(f"Проверить сообщение об ошибке: {expected}"):
+            expect(getattr(login_page, error_field)).to_have_text(expected)
