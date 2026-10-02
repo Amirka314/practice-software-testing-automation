@@ -3,6 +3,8 @@ from playwright.sync_api import Page, Playwright
 from pages.login_page import LoginPage
 from pages.home_page import HomePage
 from pages.product_page import ProductPage
+from api.auth_client import AuthClient
+from config.settings import TEST_USER_EMAIL, TEST_USER_PASSWORD
 
 @pytest.fixture(scope="session", autouse=True)
 def set_test_id_attribute(playwright: Playwright):
@@ -19,3 +21,14 @@ def home_page(page: Page) -> HomePage:
 @pytest.fixture
 def product_page(page: Page) -> ProductPage:
     return ProductPage(page)
+@pytest.fixture
+def auth_token() -> str:
+    return AuthClient().get_token(TEST_USER_EMAIL, TEST_USER_PASSWORD)
+
+
+@pytest.fixture
+def logged_in_page(context, page: Page, auth_token: str) -> Page:
+    context.add_init_script(
+        f"window.localStorage.setItem('auth-token', '{auth_token}');"
+    )
+    return page
