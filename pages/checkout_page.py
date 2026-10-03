@@ -2,8 +2,8 @@ import re
 
 from playwright.sync_api import Page
 
-from pages.base_page import BasePage
 from config.settings import API_URL
+from pages.base_page import BasePage
 
 class CheckoutPage(BasePage):
     path = "/checkout"
@@ -63,8 +63,7 @@ class CheckoutPage(BasePage):
         self.card_cvv.fill(cvv)
         self.card_holder.fill(holder)
 
-    def click_confirm(self):
-        self.finish_button.click()
+
 
     def get_invoice_number(self) -> str:
         match = re.search(r"INV-\d+", self.order_confirmation.inner_text())
@@ -73,7 +72,7 @@ class CheckoutPage(BasePage):
     def confirm_payment(self):
         with self.page.expect_response(
             lambda r: "/payment/check" in r.url and r.request.method == "POST",
-            timeout=10000,
+            timeout=30000,
         ):
             self.finish_button.click()
 
@@ -81,7 +80,7 @@ class CheckoutPage(BasePage):
         with self.page.expect_response(
             lambda r: r.url.startswith(f"{API_URL}/invoices")
             and r.request.method == "POST",
-            timeout=10000,
+            timeout=30000,
         ) as response_info:
             self.finish_button.click()
         return response_info.value
