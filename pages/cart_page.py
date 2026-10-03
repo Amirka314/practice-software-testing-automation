@@ -1,7 +1,9 @@
-import re
-from playwright.sync_api import Page
-from pages.base_page import BasePage
 
+import re
+
+from playwright.sync_api import Page
+
+from pages.base_page import BasePage
 
 class CartPage(BasePage):
     path = "/checkout"
@@ -17,8 +19,17 @@ class CartPage(BasePage):
         self.cart_total = page.get_by_test_id("cart-total")
         self.delete_buttons = page.locator("a.btn-danger")
         self.proceed_button = page.get_by_test_id("proceed-1")
+        # Алиасы для единообразия с тестами checkout
+        self.item_titles = self.product_titles
+        self.item_quantities = self.product_quantities
+        self.unit_prices = self.product_prices
+        self.total = self.cart_total
+        self.cart_badge = self.cart_quantity_badge
 
     def open_via_icon(self):
+        self.cart_icon.click()
+
+    def open_from_header(self):
         self.cart_icon.click()
 
     def get_product_titles(self) -> list[str]:

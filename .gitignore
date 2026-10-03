@@ -216,3 +216,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Скриншоты отладки
+*.png
+
+# Результаты Allure и Playwright
+allure-results/
+allure-report/
+test-results/
