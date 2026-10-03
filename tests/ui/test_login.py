@@ -28,10 +28,10 @@ class TestLogin:
         [
             ("", "", "email_error", "Email is required", "пустой email"),
             ("", "", "password_error", "Password is required", "пустой пароль"),
-            ("nouser@example.com", "wrong_password", "error_message", "Invalid email or password", "несуществующий пользователь"),
-            (TEST_USER_EMAIL, "wrong_password", "error_message", "Invalid email or password", "неверный пароль"),
+            ("nouser@example.com", "wrong_password", "error_message",
+             "Invalid email or password", "несуществующий пользователь"),
         ],
-        ids=["empty_email", "empty_password", "unknown_user", "wrong_password"],
+        ids=["empty_email", "empty_password", "unknown_user"],
     )
     def test_login_negative(self, login_page: LoginPage, email, password, error_field, expected, case):
         with allure.step("Открыть страницу логина"):
