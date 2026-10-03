@@ -1,4 +1,5 @@
 import re
+from datetime import date
 
 import allure
 import pytest
@@ -15,17 +16,31 @@ BILLING = {
     "house_number": "42",
 }
 
+# Срок считаем от текущей даты, чтобы карта не "протухла"
+CARD = {
+    "number": "1234-1234-1234-1234",
+    "expiry": f"09/{date.today().year + 2}",
+    "cvv": "123",
+    "holder": "QA Portfolio",
+}
+
+PAYMENT_METHODS = [
+    pytest.param("Cash on Delivery", None, id="cash_on_delivery"),
+    pytest.param("Credit Card", CARD, id="credit_card"),
+]
+
 
 @allure.feature("Checkout")
 class TestCheckout:
 
     @allure.story("Purchase")
-    @allure.title("Полный путь покупки: оплата наличными")
+    @allure.title("Полный путь покупки: {method}")
     @pytest.mark.smoke
     @pytest.mark.ui
-    def test_purchase_cash_on_delivery(self, logged_in_page, home_page: HomePage,
-                                       product_page: ProductPage, cart_page: CartPage,
-                                       checkout_page: CheckoutPage):
+    @pytest.mark.parametrize("method,card", PAYMENT_METHODS)
+    def test_purchase(self, logged_in_page, home_page: HomePage,
+                      product_page: ProductPage, cart_page: CartPage,
+                      checkout_page: CheckoutPage, method, card):
 
         with allure.step("Добавить товар в корзину"):
             home_page.open()
@@ -53,9 +68,11 @@ class TestCheckout:
             expect(checkout_page.proceed_from_billing_button).to_be_enabled(timeout=15000)
             checkout_page.proceed_from_billing()
 
-        with allure.step("Выбрать оплату наличными и подтвердить"):
+        with allure.step(f"Оплата: {method}"):
             expect(checkout_page.payment_method).to_be_visible()
-            checkout_page.select_payment("Cash on Delivery")
+            checkout_page.select_payment(method)
+            if card:
+                checkout_page.fill_card(**card)
             checkout_page.confirm_payment()
             expect(checkout_page.payment_success_message).to_be_visible()
 
