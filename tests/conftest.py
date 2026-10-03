@@ -2,12 +2,21 @@ import pytest
 from playwright.sync_api import Page, Playwright
 
 from api.auth_client import AuthClient
-from config.settings import TEST_USER_EMAIL, TEST_USER_PASSWORD
+
 from pages.cart_page import CartPage
 from pages.checkout_page import CheckoutPage
 from pages.home_page import HomePage
 from pages.login_page import LoginPage
 from pages.product_page import ProductPage
+from api.auth_client import AuthClient
+from utils.user_factory import build_user
+
+@pytest.fixture(scope="session")
+def test_user() -> dict:
+    user = build_user()
+    response = AuthClient().register(user)
+    assert response.status_code == 201, response.text
+    return {"email": user["email"], "password": user["password"]}
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -41,8 +50,8 @@ def checkout_page(page: Page) -> CheckoutPage:
 
 
 @pytest.fixture
-def auth_token() -> str:
-    return AuthClient().get_token(TEST_USER_EMAIL, TEST_USER_PASSWORD)
+def auth_token(test_user: dict) -> str:
+    return AuthClient().get_token(test_user["email"], test_user["password"])
 
 
 @pytest.fixture

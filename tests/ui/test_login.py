@@ -2,7 +2,6 @@ import re
 import allure
 import pytest
 from playwright.sync_api import Page, expect
-from config.settings import TEST_USER_EMAIL, TEST_USER_PASSWORD
 from pages.login_page import LoginPage
 
 @allure.feature("Authentication")
@@ -12,11 +11,11 @@ class TestLogin:
     @allure.title("Успешный вход с валидными данными")
     @pytest.mark.smoke
     @pytest.mark.ui
-    def test_successful_login(self, login_page: LoginPage, page: Page):
+    def test_successful_login(self, login_page: LoginPage, page: Page, test_user: dict):
         with allure.step("Открыть страницу логина"):
             login_page.open()
         with allure.step("Ввести валидные данные и отправить форму"):
-            login_page.login(TEST_USER_EMAIL, TEST_USER_PASSWORD)
+            login_page.login(test_user["email"], test_user["password"])
         with allure.step("Проверить переход на страницу аккаунта"):
             expect(page).to_have_url(re.compile(r"/account"))
 

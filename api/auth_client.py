@@ -15,6 +15,12 @@ class AuthClient:
             status_forcelist=[502, 503, 504],
         )
         self.session.mount("https://", HTTPAdapter(max_retries=retry))
+    def register(self, user: dict) -> requests.Response:
+        return self.session.post(
+            f"{API_URL}/users/register",
+            json=user,
+            timeout=(10, 30),
+        )
 
     def login(self, email: str, password: str) -> requests.Response:
         return self.session.post(
