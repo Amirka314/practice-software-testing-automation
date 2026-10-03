@@ -1,1 +1,0 @@
-{"uuid": "677b9129-2e5c-4e85-a957-e0e302c43659", "children": ["5ed379dc-be31-4d5e-bcd6-17dbd8422ed2"], "befores": [{"name": "product_page", "status": "passed", "start": 1790963832143, "stop": 1790963832143}], "afters": [{"name": "product_page::<lambda>", "start": 1790963835623}], "start": 1790963832143, "stop": 1790963835623}
