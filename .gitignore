@@ -219,7 +219,7 @@ __marimo__/
 
 # Скриншоты отладки
 *.png
-
+!docs/images/*.png
 # Результаты Allure и Playwright
 allure-results/
 allure-report/
