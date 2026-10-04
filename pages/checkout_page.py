@@ -5,6 +5,7 @@ from playwright.sync_api import Page
 from config.settings import API_URL
 from pages.base_page import BasePage
 
+
 class CheckoutPage(BasePage):
     path = "/checkout"
 

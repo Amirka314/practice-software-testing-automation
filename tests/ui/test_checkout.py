@@ -1,5 +1,5 @@
 import re
-from datetime import date
+from datetime import datetime, timezone
 
 import allure
 import pytest
@@ -19,7 +19,7 @@ BILLING = {
 # Срок считаем от текущей даты, чтобы карта не "протухла"
 CARD = {
     "number": "1234-1234-1234-1234",
-    "expiry": f"09/{date.today().year + 2}",
+    "expiry": f"09/{datetime.now(tz=timezone.utc).year + 2}",
     "cvv": "123",
     "holder": "QA Portfolio",
 }

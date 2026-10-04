@@ -1,8 +1,11 @@
 import re
+
 import allure
 import pytest
 from playwright.sync_api import Page, expect
+
 from pages.login_page import LoginPage
+
 
 @allure.feature("Authentication")
 @allure.story("Login")
