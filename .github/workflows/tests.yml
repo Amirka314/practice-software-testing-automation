@@ -39,8 +39,10 @@ jobs:
       - name: Install Chromium
         run: playwright install --with-deps chromium
 
-      - name: Run tests
-        run: pytest --reruns 1 --reruns-delay 2
+      - name: Run tests via Virtual Screen (Xvfb)
+        env:
+          BASE_URL: https://practicesoftwaretesting.com
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" pytest --reruns 2 --reruns-delay 3
 
       - name: Upload Allure results
         if: always()
