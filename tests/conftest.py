@@ -1,6 +1,9 @@
+import os
 from pathlib import Path
 
+import allure
 import pytest
+from playwright.sync_api import Error as PlaywrightError
 from playwright.sync_api import Page, Playwright
 
 from api.auth_client import AuthClient
@@ -14,9 +17,13 @@ from pages.login_page import LoginPage
 from pages.product_page import ProductPage
 from utils.user_factory import build_user
 
+IN_CI = os.getenv("CI") == "true"
+
 
 @pytest.fixture(scope="session")
 def browser_type_launch_args(browser_type_launch_args):
+    if not IN_CI:
+        return browser_type_launch_args
     return {
         **browser_type_launch_args,
         "args": [
@@ -31,6 +38,8 @@ def browser_type_launch_args(browser_type_launch_args):
 
 @pytest.fixture(scope="session")
 def browser_context_args(browser_context_args):
+    if not IN_CI:
+        return browser_context_args
     return {
         **browser_context_args,
         "user_agent": (
@@ -39,7 +48,6 @@ def browser_context_args(browser_context_args):
             "Chrome/124.0.0.0 Safari/537.36"
         ),
         "viewport": {"width": 1920, "height": 1080},
-        "ignore_https_errors": True,
         "locale": "en-US",
     }
 
@@ -124,3 +132,24 @@ def pytest_sessionfinish(session, exitstatus):
         "Framework=Pytest + Playwright\n",
         encoding="utf-8",
     )
+
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    report = outcome.get_result()
+    if report.when == "call" and report.failed:
+        page = item.funcargs.get("page")
+        if page is not None:
+            try:
+                allure.attach(
+                    page.screenshot(full_page=True),
+                    name="screenshot",
+                    attachment_type=allure.attachment_type.PNG,
+                )
+            except PlaywrightError as error:
+                allure.attach(
+                    str(error),
+                    name="screenshot-unavailable",
+                    attachment_type=allure.attachment_type.TEXT,
+                )
