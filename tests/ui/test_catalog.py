@@ -11,6 +11,7 @@ class TestSearch:
 
     @allure.story("Search")
     @allure.title("Поиск по запросу: {query}")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.smoke
     @pytest.mark.ui
     @pytest.mark.parametrize("query", ["Pliers", "Hammer", "Wrench"])
@@ -27,6 +28,7 @@ class TestSearch:
 
     @allure.story("Search")
     @allure.title("Поиск несуществующего товара")
+    @allure.severity(allure.severity_level.NORMAL)
     @pytest.mark.regression
     @pytest.mark.ui
     def test_search_no_results(self, home_page: HomePage):
@@ -46,6 +48,7 @@ class TestSorting:
 
     @allure.story("Sorting")
     @allure.title("Сортировка: {label}")
+    @allure.severity(allure.severity_level.MINOR)
     @pytest.mark.regression
     @pytest.mark.ui
     @pytest.mark.parametrize(
@@ -80,9 +83,10 @@ class TestFilter:
 
     @allure.story("Category filter")
     @allure.title("Фильтр по категории: {category}")
+    @allure.severity(allure.severity_level.MINOR)
     @pytest.mark.regression
     @pytest.mark.ui
-    @pytest.mark.parametrize("category", ["Hand Tools","Pliers"])
+    @pytest.mark.parametrize("category", ["Hand Tools", "Pliers"])
     def test_filter_by_category(self, home_page: HomePage, category: str):
         with allure.step("Открыть главную и дождаться каталога"):
             home_page.open()
@@ -100,6 +104,7 @@ class TestProductPage:
 
     @allure.story("Product details")
     @allure.title("Открытие карточки товара из каталога")
+    @allure.severity(allure.severity_level.NORMAL)
     @pytest.mark.smoke
     @pytest.mark.ui
     def test_open_product_from_catalog(self, home_page: HomePage, product_page: ProductPage):

@@ -35,6 +35,7 @@ class TestCheckout:
 
     @allure.story("Purchase")
     @allure.title("Полный путь покупки: {method}")
+    @allure.severity(allure.severity_level.BLOCKER)
     @pytest.mark.smoke
     @pytest.mark.ui
     @pytest.mark.parametrize("method,card", PAYMENT_METHODS)

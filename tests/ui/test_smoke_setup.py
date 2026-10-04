@@ -1,12 +1,15 @@
 import re
+
 import allure
 import pytest
 from playwright.sync_api import Page, expect
+
 from config.settings import BASE_URL
 
 
-@allure.feature("Setup")
+@allure.feature("Smoke")
 @allure.title("Главная страница открывается")
+@allure.severity(allure.severity_level.BLOCKER)
 @pytest.mark.smoke
 @pytest.mark.ui
 def test_home_page_opens(page: Page):

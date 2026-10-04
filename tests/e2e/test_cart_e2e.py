@@ -13,6 +13,7 @@ class TestCartE2E:
     @allure.title("Корзина, созданная через API, корректно отображается в UI")
     @pytest.mark.smoke
     @pytest.mark.e2e
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_cart_created_via_api_is_shown_in_ui(
         self, cart_with_product, page, home_page: HomePage, cart_page: CartPage
     ):

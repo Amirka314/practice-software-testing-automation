@@ -12,6 +12,7 @@ class TestCart:
 
     @allure.story("Add to cart")
     @allure.title("Добавление товара в корзину из карточки")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.smoke
     @pytest.mark.ui
     def test_add_product_to_cart(
@@ -33,6 +34,7 @@ class TestCart:
 
     @allure.story("Remove from cart")
     @allure.title("Удаление товара из корзины")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.regression
     @pytest.mark.ui
     def test_remove_product_from_cart(
@@ -55,6 +57,7 @@ class TestCart:
 
     @allure.story("Totals")
     @allure.title("Итоговая сумма равна цена x количество")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.regression
     @pytest.mark.ui
     def test_cart_total_matches_quantity(

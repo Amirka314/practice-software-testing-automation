@@ -11,6 +11,7 @@ class TestLogin:
     @allure.title("Успешный вход с валидными данными")
     @pytest.mark.smoke
     @pytest.mark.ui
+    @allure.severity(allure.severity_level.BLOCKER)
     def test_successful_login(self, login_page: LoginPage, page: Page, test_user: dict):
         with allure.step("Открыть страницу логина"):
             login_page.open()
@@ -32,6 +33,7 @@ class TestLogin:
         ],
         ids=["empty_email", "empty_password", "unknown_user"],
     )
+    @allure.severity(allure.severity_level.MINOR)
     def test_login_negative(self, login_page: LoginPage, email, password, error_field, expected, case):
         with allure.step("Открыть страницу логина"):
             login_page.open()
